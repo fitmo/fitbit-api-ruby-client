@@ -35,6 +35,18 @@ module Fitbit
       @access_token = OAuth2::AccessToken.new(@oauth2_client, response['access_token'], opts)
     end
 
+    def revoke!
+      http_client = Faraday.new(url: 'https://api.fitbit.com')
+      response = http_client.post do |request|
+        request.url '/oauth2/revoke'
+        request.headers['Authorization'] = "Basic #{@basic_token}"
+        request.headers['Content-Type'] = 'application/x-www-form-urlencoded'
+        request.body = { token: @access_token.refresh_token }
+      end
+      response = JSON.parse(response.body)
+      raise StandardError, "unable to revoke connection on Fitbit servers" unless response.success?
+    end
+
     private
       def get(uri)
         response = @access_token.get(uri)
