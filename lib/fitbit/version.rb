@@ -1,1 +1,1 @@
-module Fitbit VERSION = '0.1.7'; end
+module Fitbit VERSION = '0.1.6'; end
